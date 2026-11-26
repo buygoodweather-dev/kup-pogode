@@ -1,0 +1,40 @@
+{
+  // KUP POGODĘ — one Cloudflare Worker serves the site (static assets) and the API.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kup-pogode",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // the worker runs first for these paths; everything else is a plain static file
+    "run_worker_first": ["/", "/index.html", "/api/*", "/c/*", "/sukces", "/reklamacja", "/admin", "/admin/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kup-pogode",
+      "database_id": "00000000-0000-0000-0000-000000000000", // replaced after `wrangler d1 create kup-pogode`
+      "migrations_dir": "migrations"
+    }
+  ],
+  "rules": [{ "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }],
+  "triggers": { "crons": ["17 3 * * *"] },
+  "vars": {
+    "SITE_URL": "http://localhost:8787",
+    "EMAIL_FROM": "KUP POGODĘ <pogoda@example.com>",
+    "SUPPORT_EMAIL": "kontakt@example.com",
+    // price in grosze; several values = A/B test, each visitor gets one at random
+    "PRICE_VARIANTS": "999",
+    // A = no guarantee block, B = Gwarancja Pogody, C = "100% satysfakcji"; several = A/B test
+    "GUARANTEE_VARIANTS": "B",
+    // automatic refunds through the Gwarancja Pogody rules ("true"/"false")
+    "AUTO_REFUNDS": "true",
+    // Cloudflare Access (admin panel): team domain like "kuppogode.cloudflareaccess.com" and the app AUD tag
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    "ADMIN_EMAILS": ""
+  }
+  // secrets (set with `wrangler secret put NAME`, never in this file):
+  // STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY
+}

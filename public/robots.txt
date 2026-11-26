@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /c/
+Disallow: /sukces
+Disallow: /admin
+Allow: /
+Sitemap: /sitemap.xml

@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kup dobrą pogodę ☀️ | KUP POGODĘ</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Kup dobrą pogodę ☀️ | KUP POGODĘ">
+<meta property="og:description" content="Nie możesz kontrolować pogody. Ale możesz ją kupić. Personalizowany certyfikat dla siebie albo kogoś wyjątkowego.">
+<meta property="og:image" content="/og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Kup dobrą pogodę dla siebie lub kogoś wyjątkowego. Wybierz miejsce, datę i wymarzoną pogodę. Otrzymaj personalizowany certyfikat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Pinyon+Script&display=swap">
+<style>
+/* Layout: one long mobile-first page; hero = stacked display type + the certificate as a product shot; the order form sits beside a live certificate. Single light look by choice (premium paper + sky), colours set explicitly. */
+:root {
+  color-scheme: light;
+  --sky-0: #F6F8FB;      /* page ground, cool white */
+  --sky-1: #E7EEF6;      /* sky band */
+  --sky-2: #C9D8E8;      /* sky lines */
+  --ink: #1B2130;        /* graphite text */
+  --ink-2: #5A6474;      /* quiet text */
+  --sun: #F2A61F;        /* the one accent */
+  --sun-soft: #FDEBC4;
+  --paper: #FFFCF4;      /* certificate paper */
+  --paper-line: #D9C9A3; /* certificate rules */
+  --seal: #B8862B;
+  --ok: #2F7D5B;
+  --err: #B4442E;
+  --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-doc: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sign: "Pinyon Script", "Brush Script MT", cursive;
+  --radius: 14px;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body { background: var(--sky-0); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; border-radius: 6px; }
+
+/* demo banner */
+.demo { background: var(--ink); color: #F6F8FB; font-size: 13px; text-align: center; padding-block: 7px; }
+
+/* header */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: rgba(246,248,251,.92); }
+header.site { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: rgba(246,248,251,.88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--sky-1); }
+header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.logo { font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -0.01em; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.logo i { width: 16px; height: 16px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 4px var(--sun-soft); display: inline-block; }
+nav.main { display: none; gap: 24px; font-size: 14px; font-weight: 600; }
+nav.main a { text-decoration: none; color: var(--ink-2); }
+nav.main a:hover { color: var(--ink); }
+@media (min-width: 860px) { nav.main { display: flex; } }
+
+.btn { appearance: none; border: 0; cursor: pointer; font: 700 15px/1 var(--font-body); letter-spacing: 0.02em; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; padding: 16px 26px; background: var(--ink); color: #fff; transition: transform .15s ease, box-shadow .15s ease; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -10px rgba(27,33,48,.6); }
+.btn.sun { background: var(--sun); color: var(--ink); }
+.btn.small { padding: 11px 18px; font-size: 13px; }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.btn.big { padding: 20px 30px; font-size: 17px; width: 100%; }
+
+/* hero */
+.hero { position: relative; overflow: hidden; background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-0) 100%); }
+.hero .wrap { display: grid; gap: 40px; padding-block: 40px 56px; align-items: center; }
+@media (min-width: 920px) { .hero .wrap { grid-template-columns: 1.05fr .95fr; padding-block: 72px 88px; } }
+.hero h1 { font-size: clamp(56px, 14vw, 124px); font-weight: 800; line-height: .9; letter-spacing: -0.035em; position: relative; }
+.hero h1 span { display: block; }
+.hero h1 .sunword { position: relative; display: inline-block; }
+.hero h1 .sunword::before { content: ""; position: absolute; width: .78em; height: .78em; border-radius: 50%; background: radial-gradient(circle at 40% 38%, #FFD271 0%, var(--sun) 62%); right: -.32em; top: -.34em; z-index: -1; }
+.hook { font-family: var(--font-display); font-size: clamp(22px, 3.2vw, 30px); font-weight: 500; line-height: 1.2; margin-top: 26px; max-width: 26ch; }
+.hook b { font-weight: 700; }
+.hero .lead { color: var(--ink-2); margin-top: 14px; max-width: 46ch; }
+.hero .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin-top: 28px; }
+.mini-guarantee { font-size: 14px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+.mini-guarantee a { font-weight: 600; color: var(--ink); }
+.hero-visual { position: relative; display: flex; justify-content: center; }
+.hero-visual .envelope { position: absolute; width: 78%; aspect-ratio: 1.45; bottom: -6%; left: 50%; transform: translateX(-46%) rotate(4deg); background: #EAD9B6; border-radius: 10px; box-shadow: 0 24px 50px -28px rgba(27,33,48,.55); max-width: 100%; }
+.hero-visual .envelope::after { content: ""; position: absolute; inset: 0; border-radius: 10px; background: linear-gradient(155deg, transparent 49.6%, rgba(0,0,0,.08) 50%, transparent 50.4%), linear-gradient(25deg, transparent 49.6%, rgba(0,0,0,.08) 50%, transparent 50.4%); }
+.cert-shot { position: relative; width: min(420px, 86%); transform: rotate(-3deg); filter: drop-shadow(0 30px 40px rgba(27,33,48,.22)); }
+.cert-shot svg { display: block; width: 100%; height: auto; }
+
+section { padding-block: 72px; }
+section h2 { font-size: clamp(36px, 6vw, 60px); font-weight: 800; }
+.sub { color: var(--ink-2); margin-top: 12px; max-width: 52ch; font-size: 17px; }
+
+/* how it works */
+.steps { display: grid; gap: 16px; margin-top: 36px; counter-reset: s; }
+@media (min-width: 760px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+.step { border-top: 2px solid var(--ink); padding-top: 18px; }
+.step .n { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--sun); letter-spacing: .04em; }
+.step h3 { font-size: 30px; margin-top: 6px; }
+.step p { color: var(--ink-2); margin-top: 8px; max-width: 34ch; }
+
+/* order */
+#zamow { background: #fff; border-top: 1px solid var(--sky-1); border-bottom: 1px solid var(--sky-1); }
+.order { display: grid; gap: 32px; margin-top: 32px; }
+@media (min-width: 960px) { .order { grid-template-columns: minmax(0, 1fr) 420px; gap: 56px; align-items: start; } }
+.preview-col { order: -1; min-width: 0; }
+@media (min-width: 960px) { .preview-col { order: 2; position: sticky; top: 84px; } }
+.preview-card { background: var(--sky-1); border-radius: 20px; padding: 18px; }
+.preview-card summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; }
+.preview-card summary::-webkit-details-marker { display: none; }
+.preview-card summary .tog { font-weight: 600; color: var(--ink-2); font-size: 13px; }
+.preview-card[open] summary .tog .o { display: none; }
+.preview-card:not([open]) summary .tog .c { display: none; }
+.preview-card .live { margin-top: 14px; }
+.preview-card svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 14px 24px rgba(27,33,48,.16)); }
+@media (max-width: 959px) { .preview-card .live { max-width: 270px; margin-left: auto; margin-right: auto; } }
+
+form.f { display: grid; gap: 30px; min-width: 0; }
+.field { display: grid; gap: 10px; min-width: 0; }
+.field > label, .field > .lbl { font-weight: 700; font-size: 15px; }
+.field .hint { font-size: 13px; color: var(--ink-2); }
+.k { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--ink-2); letter-spacing: .08em; margin-right: 6px; }
+input[type=text], input[type=email], input[type=date], input[type=number], textarea {
+  width: 100%; font: 500 17px/1.3 var(--font-body); color: var(--ink); background: var(--sky-0);
+  border: 1.5px solid var(--sky-2); border-radius: 12px; padding: 14px 14px; min-width: 0; }
+input:focus, textarea:focus { outline: none; border-color: var(--ink); background: #fff; }
+textarea { resize: vertical; min-height: 84px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span { display: inline-flex; align-items: center; gap: 6px; padding: 11px 16px; border-radius: 999px; border: 1.5px solid var(--sky-2); background: #fff; font-weight: 600; font-size: 15px; cursor: pointer; user-select: none; transition: background .12s, border-color .12s; }
+.chip input:checked + span { background: var(--ink); color: #fff; border-color: var(--ink); }
+.chip input:focus-visible + span { outline: 3px solid var(--sun); outline-offset: 2px; }
+.seg { display: inline-grid; grid-template-columns: 1fr 1fr; background: var(--sky-1); border-radius: 999px; padding: 4px; width: 100%; max-width: 360px; }
+.seg label { position: relative; text-align: center; }
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg span { display: block; padding: 11px 10px; border-radius: 999px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.seg input:checked + span { background: #fff; box-shadow: 0 2px 8px -3px rgba(27,33,48,.3); }
+.seg input:focus-visible + span { outline: 3px solid var(--sun); }
+.row2 { display: grid; gap: 12px; }
+@media (min-width: 560px) { .row2 { grid-template-columns: 1fr 1fr; } }
+.counter { font-size: 12px; color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; }
+.checks { display: grid; gap: 12px; font-size: 14px; color: var(--ink-2); }
+.checks label { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; cursor: pointer; }
+.checks input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--ink); }
+.err { color: var(--err); font-size: 13px; font-weight: 600; }
+.field.bad input, .field.bad textarea { border-color: var(--err); }
+.pay { display: grid; gap: 12px; padding: 20px; border-radius: 20px; background: var(--sky-0); border: 1.5px solid var(--sky-1); }
+.pay .methods { font-size: 13px; color: var(--ink-2); text-align: center; }
+.guar-inline { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; }
+.guar-inline .sunbadge { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--sun); display: grid; place-items: center; font-weight: 800; }
+.guar-inline b { display: block; }
+.guar-inline span { color: var(--ink-2); }
+
+/* what you buy */
+.buy { display: grid; gap: 32px; }
+@media (min-width: 860px) { .buy { grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; } }
+.buy .big { font-family: var(--font-display); font-size: clamp(26px, 3.4vw, 34px); font-weight: 500; line-height: 1.2; margin-top: 18px; }
+.contains { margin: 22px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
+.contains li { border-top: 1px solid var(--sky-2); padding-top: 8px; font-weight: 600; }
+.crop { border-radius: 20px; overflow: hidden; background: var(--sky-1); padding: 28px 28px 0; max-height: 360px; }
+.crop svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 10px 20px rgba(27,33,48,.15)); }
+
+/* guarantee */
+#gwarancja { background: var(--ink); color: #F6F8FB; }
+#gwarancja .g { display: grid; gap: 28px; }
+@media (min-width: 860px) { #gwarancja .g { grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: end; } }
+#gwarancja .eyebrow { color: var(--sun); }
+#gwarancja h2 { margin-top: 12px; }
+#gwarancja .q { font-family: var(--font-display); font-size: clamp(26px, 3.6vw, 38px); font-weight: 500; line-height: 1.15; }
+#gwarancja p.t { color: #B9C2D0; margin-top: 14px; max-width: 46ch; }
+#gwarancja .stamp { justify-self: start; font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; border: 2px solid var(--sun); color: var(--sun); padding: 10px 14px; border-radius: 8px; transform: rotate(-4deg); margin-top: 22px; display: inline-block; }
+#gwarancja .fine { font-size: 13px; color: #8F99A9; margin-top: 18px; }
+#gwarancja a { color: #F6F8FB; }
+
+/* occasions */
+.occ { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 32px; }
+@media (min-width: 760px) { .occ { grid-template-columns: repeat(4, 1fr); } }
+.occ button { all: unset; box-sizing: border-box; cursor: pointer; background: #fff; border: 1.5px solid var(--sky-1); border-radius: var(--radius); padding: 18px; display: grid; gap: 6px; min-height: 108px; align-content: start; transition: border-color .12s, transform .12s; }
+.occ button:hover { border-color: var(--ink); transform: translateY(-2px); }
+.occ button:focus-visible { outline: 3px solid var(--sun); }
+.occ .e { font-size: 22px; }
+.occ b { font-weight: 700; }
+.occ small { color: var(--ink-2); font-size: 13px; }
+
+/* soon */
+.soon { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.soon span { border: 1.5px dashed var(--sky-2); border-radius: 999px; padding: 10px 16px; font-weight: 700; font-size: 14px; color: var(--ink-2); }
+.soon em { font-style: normal; font-weight: 600; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; margin-left: 6px; color: var(--sun); }
+
+/* faq */
+.faq { margin-top: 28px; border-top: 1.5px solid var(--ink); max-width: 760px; }
+.faq details { border-bottom: 1px solid var(--sky-2); }
+.faq summary { cursor: pointer; list-style: none; padding: 18px 36px 18px 0; position: relative; font-weight: 700; font-size: 17px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 4px; top: 14px; font-size: 24px; font-weight: 500; }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { padding: 0 0 18px; color: var(--ink-2); max-width: 62ch; }
+
+footer { padding-block: 48px 120px; border-top: 1px solid var(--sky-1); }
+footer .wrap { display: grid; gap: 20px; }
+@media (min-width: 760px) { footer .wrap { grid-template-columns: 1fr auto; align-items: end; } }
+footer p { color: var(--ink-2); margin-top: 8px; max-width: 40ch; }
+footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; font-weight: 600; }
+footer nav a { text-decoration: none; color: var(--ink-2); }
+footer .legal { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); max-width: 80ch; }
+
+/* guarantee A/B: A hides the guarantee, C uses the plain "100% satysfakcji" line */
+body[data-g="A"] [data-guarantee] { display: none !important; }
+body:not([data-g="C"]) .g-c { display: none; }
+body[data-g="C"] .g-b { display: none; }
+.notice { background: var(--sun-soft); text-align: center; font-size: 14px; font-weight: 600; padding-block: 10px; }
+
+/* sticky mobile bar */
+.mbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; padding: 10px var(--gutter-r) calc(10px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); background: rgba(246,248,251,.94); backdrop-filter: blur(10px); border-top: 1px solid var(--sky-1); transition: transform .2s ease; }
+.mbar .btn { width: 100%; }
+.mbar.hide { transform: translateY(110%); }
+@media (min-width: 960px) { .mbar { display: none; } }
+
+/* success overlay */
+.done { position: fixed; inset: 0; z-index: 20; background: rgba(27,33,48,.55); display: grid; place-items: center; padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(16px + env(safe-area-inset-bottom, 0px)) var(--gutter-l); overflow-y: auto; }
+.done .box { background: var(--sky-0); border-radius: 24px; max-width: 920px; width: 100%; padding: 28px; display: grid; gap: 24px; }
+@media (min-width: 820px) { .done .box { grid-template-columns: 1fr 340px; padding: 40px; gap: 40px; align-items: center; } }
+.done h2 { font-size: clamp(34px, 5vw, 52px); }
+.done .s { color: var(--ink-2); margin-top: 8px; font-size: 17px; }
+.done dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 22px 0 0; font-size: 15px; }
+.done dt { color: var(--ink-2); }
+.done dd { margin: 0; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.done .acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.done .note { font-size: 13px; color: var(--ink-2); margin-top: 16px; }
+.done svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 14px 24px rgba(27,33,48,.2)); }
+.toast { position: fixed; left: 50%; bottom: calc(90px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30; background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 12px; font-size: 14px; font-weight: 600; max-width: calc(100% - 32px); }
+</style>
+</head>
+<body>
+
+
+<div class="notice" id="cancelled" hidden>Płatność została anulowana. Twoje dane są w formularzu, możesz spróbować ponownie.</div>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="KUP POGODĘ, strona główna"><i aria-hidden="true"></i>KUP POGODĘ</a>
+    <nav class="main" aria-label="Nawigacja">
+      <a href="#jak">Jak to działa</a>
+      <a href="#certyfikat">Certyfikat</a>
+      <a href="#gwarancja" data-guarantee>Gwarancja</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn small" href="#zamow" data-track="header_cta_click">KUP TERAZ</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1><span>KUP</span><span>DOBRĄ</span><span><span class="sunword">POGODĘ</span></span></h1>
+        <p class="hook">Nie możesz kontrolować pogody.<br><b>Ale możesz ją kupić.</b></p>
+        <p class="lead">Wybierz miejsce, datę i pogodę, o jakiej marzysz. Kup ją dla siebie albo podaruj komuś wyjątkowemu.</p>
+        <div class="cta-row">
+          <a class="btn sun" href="#zamow" data-track="hero_cta_click">KUP TERAZ — <span data-price>9,99 zł</span></a>
+          <p class="mini-guarantee" data-guarantee>☀️ <span>Z <a href="#gwarancja">Gwarancją Pogody</a></span></p>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Przykładowy certyfikat">
+        <div class="envelope" aria-hidden="true"></div>
+        <div class="cert-shot" id="heroCert"></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="jak">
+    <div class="wrap">
+      <p class="eyebrow">Jak to działa?</p>
+      <h2 style="margin-top:10px">Prostsze niż zamawianie pizzy.</h2>
+      <p class="sub">Tylko zamiast pizzy zamawiasz pogodę.</p>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Wybierz</h3><p>Miejsce, datę i pogodę, którą chcesz „kupić”.</p></div>
+        <div class="step"><div class="n">02</div><h3>Kup</h3><p>Dodaj wiadomość i zapłać BLIK-iem lub kartą. Zajmie to minutę.</p></div>
+        <div class="step"><div class="n">03</div><h3>Podaruj</h3><p>Dostaniesz piękny certyfikat do wysłania. Na e-mail i od razu na ekranie.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="zamow">
+    <div class="wrap">
+      <p class="eyebrow">Twoje zamówienie</p>
+      <h2 style="margin-top:10px">Kup swoją pogodę</h2>
+      <div class="order">
+        <div class="preview-col">
+          <details class="preview-card" id="previewBox" open>
+            <summary><span>Podgląd certyfikatu</span><span class="tog"><span class="o">Pokaż</span><span class="c">Zwiń</span></span></summary>
+            <div class="live" id="liveCert" aria-live="polite"></div>
+          </details>
+        </div>
+
+        <form class="f" id="orderForm" novalidate>
+          <div class="field">
+            <span class="lbl"><span class="k">1</span>Dla kogo?</span>
+            <div class="seg" role="radiogroup" aria-label="Dla kogo">
+              <label><input type="radio" name="forWhom" id="fw-someone" value="someone" checked><span>Dla kogoś</span></label>
+              <label><input type="radio" name="forWhom" id="fw-me" value="me"><span>Dla mnie</span></label>
+            </div>
+            <div class="row2" id="recipientRow">
+              <div class="field" id="f-recipient">
+                <input type="text" id="recipient" name="recipient" maxlength="40" placeholder="Imię odbiorcy, np. Ania" autocomplete="off" aria-label="Imię odbiorcy">
+              </div>
+              <div class="field">
+                <input type="email" id="recipientEmail" name="recipientEmail" maxlength="120" placeholder="E-mail odbiorcy (opcjonalnie)" aria-label="E-mail odbiorcy, opcjonalnie">
+              </div>
+            </div>
+            <span class="hint" id="recipientHint">Jeśli podasz e-mail odbiorcy, wyślemy certyfikat także jemu.</span>
+          </div>
+
+          <div class="field" id="f-place">
+            <label for="place"><span class="k">2</span>Gdzie chcesz kupić pogodę?</label>
+            <input type="text" id="place" name="place" maxlength="60" placeholder="np. Kraków, Zakopane, Gdańsk, Barcelona" autocomplete="off">
+          </div>
+
+          <div class="field" id="f-date">
+            <span class="lbl"><span class="k">3</span>Na kiedy?</span>
+            <div class="chips" role="radiogroup" aria-label="Data">
+              <label class="chip"><input type="radio" name="dateMode" id="dm-weekend" value="weekend" checked><span>Ten weekend</span></label>
+              <label class="chip"><input type="radio" name="dateMode" id="dm-week" value="week"><span>Za tydzień</span></label>
+              <label class="chip"><input type="radio" name="dateMode" id="dm-other" value="other"><span>Inna data</span></label>
+            </div>
+            <input type="date" id="dateOther" name="dateOther" hidden aria-label="Wybierz datę">
+          </div>
+
+          <div class="field" id="f-temp">
+            <span class="lbl"><span class="k">4</span>Jakiej temperatury sobie życzysz?</span>
+            <div class="chips" role="radiogroup" aria-label="Temperatura">
+              <label class="chip"><input type="radio" name="temp" id="t-15" value="15–18°C"><span>15–18°C</span></label>
+              <label class="chip"><input type="radio" name="temp" id="t-19" value="19–22°C"><span>19–22°C</span></label>
+              <label class="chip"><input type="radio" name="temp" id="t-23" value="23–26°C" checked><span>23–26°C</span></label>
+              <label class="chip"><input type="radio" name="temp" id="t-27" value="27–30°C"><span>27–30°C</span></label>
+              <label class="chip"><input type="radio" name="temp" id="t-own" value="own"><span>Własna</span></label>
+            </div>
+            <input type="number" id="tempOwn" name="tempOwn" min="-30" max="45" step="1" placeholder="np. 24" hidden aria-label="Własna temperatura w °C">
+          </div>
+
+          <div class="field" id="f-cond">
+            <span class="lbl"><span class="k">5</span>Jaka ma być pogoda?</span>
+            <div class="chips" aria-label="Warunki">
+              <label class="chip"><input type="checkbox" name="cond" id="c-sun" value="Słońce" checked><span>☀️ Słońce</span></label>
+              <label class="chip"><input type="checkbox" name="cond" id="c-clouds" value="Lekkie chmury"><span>⛅ Lekkie chmury</span></label>
+              <label class="chip"><input type="checkbox" name="cond" id="c-norain" value="Bez deszczu" checked><span>☂️ Bez deszczu</span></label>
+              <label class="chip"><input type="checkbox" name="cond" id="c-warm" value="Przyjemnie ciepło"><span>🌡️ Przyjemnie ciepło</span></label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message"><span class="k">6</span>Dodaj wiadomość <span class="hint">(opcjonalnie)</span></label>
+            <textarea id="message" name="message" maxlength="180" placeholder="np. „Na nasz idealny weekend ❤️”"></textarea>
+            <div class="counter"><span id="msgCount">0</span> / 180</div>
+          </div>
+
+          <div class="field">
+            <span class="lbl"><span class="k">7</span>Od kogo?</span>
+            <div class="row2">
+              <div class="field" id="f-buyer"><input type="text" id="buyer" name="buyer" maxlength="40" placeholder="Twoje imię" autocomplete="given-name" aria-label="Twoje imię"></div>
+              <div class="field" id="f-email"><input type="email" id="email" name="email" maxlength="120" placeholder="Twój e-mail" autocomplete="email" aria-label="Twój e-mail"></div>
+            </div>
+            <span class="hint">Na ten adres wyślemy certyfikat i potwierdzenie zamówienia.</span>
+          </div>
+
+          <div class="pay">
+            <div class="checks">
+              <label id="f-terms"><input type="checkbox" id="terms"><span>Akceptuję <a href="/regulamin" target="_blank">Regulamin</a> sklepu i zapoznałem/am się z <a href="/prywatnosc" target="_blank">Polityką prywatności</a>.</span></label>
+              <label id="f-instant"><input type="checkbox" id="instant"><span>Chcę otrzymać certyfikat od razu i wiem, że po jego dostarczeniu tracę prawo do odstąpienia od umowy. Gwarancja Pogody działa niezależnie.</span></label>
+            </div>
+            <p class="err" id="formErr" role="alert" hidden></p>
+            <button class="btn big" type="submit" id="buyBtn">KUPUJĘ — <span data-price>9,99 zł</span></button>
+            <p class="methods">BLIK · karta · Apple Pay · Google Pay</p>
+            <div class="guar-inline" data-guarantee><div class="sunbadge" aria-hidden="true">☀</div><p><b>Gwarancja Pogody</b><span class="g-b">Kupiłeś słońce, a przyszła ulewa? Zgłoś reklamację, oddamy pieniądze.</span><span class="g-c">100% satysfakcji albo zwrot pieniędzy.</span></p></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="certyfikat">
+    <div class="wrap buy">
+      <div>
+        <p class="eyebrow">Co właściwie kupujesz?</p>
+        <p class="big">Nie będziemy udawać, że mamy wpływ na atmosferę. Nie mamy.</p>
+        <p class="sub">Kupujesz coś znacznie prostszego: ładny, personalizowany cyfrowy prezent, który wygląda jak bardzo oficjalny dokument.</p>
+        <ul class="contains">
+          <li>miejsce</li><li>datę</li><li>wymarzoną temperaturę</li><li>wybrane warunki</li><li>imię odbiorcy</li><li>Twoją wiadomość</li>
+        </ul>
+        <div style="margin-top:28px"><a class="btn" href="#zamow" data-track="mid_cta_click">KUP DOBRĄ POGODĘ — <span data-price>9,99 zł</span></a></div>
+        <p class="hint" style="margin-top:10px;font-size:13px;color:var(--ink-2)">Dostępne od ręki. Certyfikat wysyłamy e-mailem.</p>
+      </div>
+      <div class="crop" id="cropCert" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section id="gwarancja" data-guarantee>
+    <div class="wrap g">
+      <div>
+        <p class="eyebrow">☀️ Gwarancja Pogody</p>
+        <h2>Kupiłeś słońce, a przyszła ulewa?</h2>
+        <p class="t">Jeśli zamówiona pogoda nie spełni Twoich oczekiwań, możesz poprosić o zwrot pieniędzy. Bo skoro można ją kupić, to powinna działać.</p>
+        <p class="fine">Zasady zwrotu opisuje <a href="/regulamin" target="_blank">Regulamin</a>. Zamówienie pogody ma charakter symboliczny i rozrywkowy.</p>
+      </div>
+      <div>
+        <p class="q">Nie tak się umawialiśmy.</p>
+        <span class="stamp">Reklamacja przyjęta</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="okazje">
+    <div class="wrap">
+      <p class="eyebrow">Mały prezent. Duży efekt.</p>
+      <h2 style="margin-top:10px">Na jaką okazję kupuje się pogodę?</h2>
+      <div class="occ">
+        <button type="button" data-msg="Bo zasługujesz na idealny dzień ❤️"><span class="e">❤️</span><b>Na randkę</b><small>Słońce na pierwszą kawę</small></button>
+        <button type="button" data-msg="Wszystkiego najlepszego! Pogoda już opłacona 🎂"><span class="e">🎂</span><b>Na urodziny</b><small>Prezent, który nic nie waży</small></button>
+        <button type="button" data-msg="Kolejny rok razem. Tym razem bez deszczu 💍"><span class="e">💍</span><b>Na rocznicę</b><small>Bez deszczu, jak obiecano</small></button>
+        <button type="button" data-msg="Udanej podróży! Pogodę mamy załatwioną ✈️"><span class="e">✈️</span><b>Przed wyjazdem</b><small>Urlop z gwarancją</small></button>
+        <button type="button" data-msg="Na nasz idealny weekend ☀️"><span class="e">🏖️</span><b>Na weekend</b><small>Dwa dni słońca</small></button>
+        <button type="button" data-msg="Bo podobno nie można kupić dobrej pogody. Postanowiłem sprawdzić."><span class="e">😂</span><b>Dla żartu</b><small>Najlepszy prezent za 10 zł</small></button>
+        <button type="button" data-msg="Po prostu dlatego, że można ☀️"><span class="e">☀️</span><b>Bo można</b><small>Nie trzeba okazji</small></button>
+        <button type="button" data-msg="Trzymam kciuki! Pogoda po Twojej stronie 🍀"><span class="e">🍀</span><b>Na ważny dzień</b><small>Egzamin, ślub, start</small></button>
+      </div>
+      <p class="hint" style="margin-top:14px;font-size:13px;color:var(--ink-2)">Kliknij okazję, a wpiszemy gotową wiadomość do formularza.</p>
+    </div>
+  </section>
+
+  <section id="faq" style="padding-top:24px">
+    <div class="wrap">
+      <h2>FAQ</h2>
+      <div class="faq">
+        <details><summary>Czy naprawdę możecie kupić pogodę?</summary><p>Nie. I właśnie na tym polega cały pomysł. KUP POGODĘ to cyfrowy, humorystyczny prezent. Nie jest prognozą pogody ani usługą meteorologiczną.</p></details>
+        <details><summary>Co otrzymam?</summary><p>Personalizowany certyfikat „zakupu pogody” jako stronę z linkiem do wysłania i plik PDF. Wysyłamy go na Twój e-mail zaraz po płatności.</p></details>
+        <details><summary>Czy mogę kupić pogodę dla kogoś?</summary><p>Oczywiście. Wpisz imię odbiorcy i dodaj wiadomość. Jeśli podasz jego e-mail, wyślemy certyfikat także jemu. Możesz też przesłać go sam przez WhatsApp lub Messengera.</p></details>
+        <details><summary>Czy mogę wybrać dowolną datę?</summary><p>Tak, dowolny dzień od dziś do trzech lat w przód.</p></details>
+        <details><summary>Czy to jest prognoza pogody?</summary><p>Nie. Nie sprawdzamy prognoz i nie przewidujemy rzeczywistych warunków atmosferycznych. Certyfikat jest symbolicznym zamówieniem wymarzonej pogody.</p></details>
+        <details><summary>A co, jeśli kupię słońce, a będzie padać?</summary><p>Nie tak się umawialiśmy. Dlatego jest Gwarancja Pogody: zgłoś reklamację z numerem zamówienia, a zwrócimy pieniądze zgodnie z Regulaminem.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:16px">
+    <div class="wrap">
+      <p class="eyebrow">Wkrótce w sklepie</p>
+      <h2 style="margin-top:10px;font-size:clamp(30px,4.6vw,44px)">A co, jeśli nie chcesz słońca?</h2>
+      <div class="soon"><span>🌧️ KUP DESZCZ<em>wkrótce</em></span><span>❄️ KUP ŚNIEG<em>wkrótce</em></span><span>🔥 KUP UPAŁ<em>wkrótce</em></span><span>😈 KUP ZŁĄ POGODĘ DLA BYŁEGO<em>wkrótce</em></span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="logo" href="#top"><i aria-hidden="true"></i>KUP POGODĘ</a>
+      <p>Nie możemy zmienić pogody. Ale możemy ją pięknie zapakować.</p>
+    </div>
+    <nav aria-label="Stopka">
+      <a href="#jak">Jak to działa</a><a href="#gwarancja">Gwarancja Pogody</a><a href="#faq">FAQ</a><a href="/regulamin">Regulamin</a><a href="/prywatnosc">Polityka prywatności</a><a href="/kontakt">Kontakt</a><a href="/reklamacja">Reklamacja pogody</a>
+    </nav>
+    <p class="legal">Zamówienie / zakup pogody ma charakter symboliczny i rozrywkowy. Nie jest prognozą pogody ani gwarancją rzeczywistych warunków atmosferycznych.</p>
+  </div>
+</footer>
+
+<div class="mbar" id="mbar"><a class="btn sun" href="#zamow" data-track="sticky_cta_click">KUP TERAZ — <span data-price>9,99 zł</span></a></div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script type="module">
+import { renderCertificate, formatDatePL, MESSAGE_MAX } from "/cert.js";
+
+/* ---------- analytics: cookie-less, anonymous id per tab session ---------- */
+const params = new URLSearchParams(location.search);
+let sid = ""; try { sid = sessionStorage.getItem("kp_sid") || ""; if (!sid) { sid = Math.random().toString(36).slice(2, 12); sessionStorage.setItem("kp_sid", sid); } } catch (e) {}
+let utm = {}; try { utm = JSON.parse(sessionStorage.getItem("kp_utm") || "{}"); } catch (e) {}
+if (params.get("utm_source")) { utm = { source: params.get("utm_source"), campaign: params.get("utm_campaign") || undefined }; try { sessionStorage.setItem("kp_utm", JSON.stringify(utm)); } catch (e) {} }
+if (!utm.source && document.referrer && !document.referrer.startsWith(location.origin)) { try { utm = { source: new URL(document.referrer).hostname }; } catch (e) {} }
+function track(name) {
+  const body = JSON.stringify({ name, sid, path: location.pathname, source: utm.source, campaign: utm.campaign });
+  try { navigator.sendBeacon("/api/event", new Blob([body], { type: "application/json" })); } catch (e) {}
+}
+track("page_view");
+document.addEventListener("click", e => { const t = e.target.closest("[data-track]"); if (t) track(t.dataset.track); });
+
+/* ---------- form ---------- */
+const $ = id => document.getElementById(id);
+const form = $("orderForm");
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const nextSaturday = () => { const d = new Date(); d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7)); return d; };
+(() => { const t = new Date(), max = new Date(); max.setFullYear(t.getFullYear() + 3); $("dateOther").min = iso(t); $("dateOther").max = iso(max); })();
+$("message").maxLength = MESSAGE_MAX;
+
+function readForm() {
+  const fd = new FormData(form);
+  const forMe = fd.get("forWhom") === "me";
+  const buyer = (fd.get("buyer") || "").trim();
+  const mode = fd.get("dateMode");
+  let date = "";
+  if (mode === "weekend") date = iso(nextSaturday());
+  else if (mode === "week") { const d = new Date(); d.setDate(d.getDate() + 7); date = iso(d); }
+  else date = fd.get("dateOther") || "";
+  let temp = fd.get("temp");
+  if (temp === "own") { const v = fd.get("tempOwn"); temp = v !== "" && v != null ? `${Math.round(Number(v))}°C` : ""; }
+  return {
+    forMe, buyer,
+    recipient: forMe ? buyer : (fd.get("recipient") || "").trim(),
+    recipientEmail: forMe ? "" : (fd.get("recipientEmail") || "").trim(),
+    place: (fd.get("place") || "").trim(),
+    date, temp, conditions: fd.getAll("cond"),
+    message: (fd.get("message") || "").trim(),
+    email: (fd.get("email") || "").trim(),
+    terms: $("terms").checked, instant: $("instant").checked,
+  };
+}
+
+const SAMPLE = { recipient: "Ania", place: "Kraków", dateLabel: "15 czerwca 2027", temp: "23–26°C", conditions: ["Słońce", "Bez deszczu"], message: "Bo podobno nie można kupić dobrej pogody. Postanowiłem sprawdzić.", buyer: "Łukasz", certNo: "KPG-4F7Q2K" };
+$("heroCert").innerHTML = renderCertificate(SAMPLE);
+$("cropCert").innerHTML = renderCertificate(SAMPLE);
+
+/* keep an unfinished order if the visitor comes back from a cancelled payment */
+const DRAFT = "kp_draft";
+function saveDraft() { try { const d = readForm(); delete d.terms; delete d.instant; sessionStorage.setItem(DRAFT, JSON.stringify(d)); } catch (e) {} }
+function loadDraft() {
+  let d; try { d = JSON.parse(sessionStorage.getItem(DRAFT) || "null"); } catch (e) {}
+  if (!d) return;
+  form.forWhom.value = d.forMe ? "me" : "someone";
+  for (const k of ["recipient", "recipientEmail", "place", "message", "buyer", "email"]) if (d[k]) $(k).value = d[k];
+  if (d.date) { form.dateMode.value = "other"; $("dateOther").value = d.date; }
+  if (d.temp) { const chip = [...form.temp].find(r => r.value === d.temp); if (chip) chip.checked = true; else { form.temp.value = "own"; $("tempOwn").value = parseInt(d.temp, 10); } }
+  if (d.conditions) [...form.cond].forEach(c => c.checked = d.conditions.includes(c.value));
+}
+if (params.get("anulowano")) { $("cancelled").hidden = false; loadDraft(); }
+
+let started = false;
+function refresh() {
+  const d = readForm();
+  $("recipientRow").hidden = d.forMe; $("recipientHint").hidden = d.forMe;
+  $("dateOther").hidden = form.dateMode.value !== "other";
+  $("tempOwn").hidden = form.temp.value !== "own";
+  $("msgCount").textContent = d.message.length;
+  $("liveCert").innerHTML = renderCertificate({
+    recipient: d.recipient || (d.forMe ? "Ty" : "Imię odbiorcy"),
+    place: d.place || "Twoje miejsce", dateLabel: formatDatePL(d.date) || "wybierz datę",
+    temp: d.temp || "—", conditions: d.conditions, message: d.message, buyer: d.buyer || "Twoje imię",
+  });
+}
+form.addEventListener("input", () => { if (!started) { started = true; track("form_started"); } refresh(); clearErrors(); });
+form.addEventListener("change", refresh);
+refresh();
+
+document.querySelectorAll(".occ button").forEach(b => b.addEventListener("click", () => {
+  $("message").value = b.dataset.msg; refresh(); track("occasion_click");
+  $("zamow").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+}));
+
+/* ---------- validation (the server checks everything again) ---------- */
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const FIELD_OF = { recipient: ["f-recipient", "imię odbiorcy"], recipientEmail: ["f-recipient", "poprawny e-mail odbiorcy"], place: ["f-place", "miejsce"], date: ["f-date", "datę"], temp: ["f-temp", "temperaturę"], conditions: ["f-cond", "rodzaj pogody"], buyer: ["f-buyer", "swoje imię"], email: ["f-email", "poprawny e-mail"], terms: ["f-terms", "akceptację Regulaminu"], instant: ["f-instant", "zgodę na natychmiastowe dostarczenie"] };
+function clearErrors() { document.querySelectorAll(".field.bad, .checks .bad").forEach(f => f.classList.remove("bad")); $("formErr").hidden = true; }
+function showErrors(keys, prefix = "Uzupełnij: ") {
+  const items = [...new Set(keys)].map(k => FIELD_OF[k]).filter(Boolean);
+  items.forEach(([id]) => $(id)?.classList.add("bad"));
+  $("formErr").textContent = prefix + items.map(i => i[1]).join(", ") + ".";
+  $("formErr").hidden = false;
+  (items[0] ? $(items[0][0]) : $("formErr")).scrollIntoView({ block: "center" });
+}
+function validate(d) {
+  const bad = [];
+  if (!d.forMe && !d.recipient) bad.push("recipient");
+  if (!d.place) bad.push("place");
+  if (!d.date || d.date < iso(new Date())) bad.push("date");
+  if (!d.temp) bad.push("temp");
+  if (!d.conditions.length) bad.push("conditions");
+  if (!d.buyer) bad.push("buyer");
+  if (!EMAIL.test(d.email)) bad.push("email");
+  if (d.recipientEmail && !EMAIL.test(d.recipientEmail)) bad.push("recipientEmail");
+  if (!d.terms) bad.push("terms");
+  if (!d.instant) bad.push("instant");
+  return bad;
+}
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 4000); }
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const d = readForm(); const bad = validate(d);
+  if (bad.length) return showErrors(bad);
+  track("form_completed");
+  saveDraft();
+  const btn = $("buyBtn"); const label = btn.innerHTML;
+  btn.disabled = true; btn.textContent = "Otwieramy płatność…";
+  try {
+    const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...d, sid, source: utm.source, campaign: utm.campaign }) });
+    const j = await res.json().catch(() => ({}));
+    if (res.ok && j.url) { location.href = j.url; return; }
+    if (j.fields) showErrors(j.fields, "Sprawdź: "); else toast(j.error || "Coś poszło nie tak. Spróbuj ponownie.");
+  } catch (err) { toast("Brak połączenia. Spróbuj ponownie."); }
+  btn.disabled = false; btn.innerHTML = label;
+});
+
+/* ---------- sticky mobile CTA: hidden while the hero button or the form is on screen ---------- */
+const mbar = $("mbar"); const seen = new Set();
+const io = new IntersectionObserver(es => { es.forEach(en => en.isIntersecting ? seen.add(en.target) : seen.delete(en.target)); mbar.classList.toggle("hide", seen.size > 0); });
+io.observe(document.querySelector(".hero .cta-row")); io.observe($("zamow"));
+</script>
+</body>
+</html>
