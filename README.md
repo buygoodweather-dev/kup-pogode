@@ -31,7 +31,7 @@ node scripts/fake-webhook.mjs checkout.session.completed KPG-XXXXXX   # udawana 
 
 ```bash
 npx wrangler login
-npx wrangler d1 create kup-pogode       # wpisz database_id do wrangler.jsonc
+npx wrangler d1 create buygoodweather       # wpisz database_id do wrangler.jsonc
 npm run db:migrate:remote
 npx wrangler secret put STRIPE_SECRET_KEY
 npx wrangler secret put STRIPE_WEBHOOK_SECRET

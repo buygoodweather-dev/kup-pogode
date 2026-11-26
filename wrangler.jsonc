@@ -13,7 +13,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "kup-pogode",
+      "database_name": "buygoodweather",
       "database_id": "00000000-0000-0000-0000-000000000000", // replaced after `wrangler d1 create kup-pogode`
       "migrations_dir": "migrations"
     }
