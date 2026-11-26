@@ -14,7 +14,7 @@
     {
       "binding": "DB",
       "database_name": "buygoodweather",
-      "database_id": "00000000-0000-0000-0000-000000000000", // replaced after `wrangler d1 create kup-pogode`
+      "database_id": "7992b31c-cd60-46a7-b8d9-ca4d93e2d806",
       "migrations_dir": "migrations"
     }
   ],
