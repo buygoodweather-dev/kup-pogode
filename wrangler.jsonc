@@ -21,9 +21,9 @@
   "rules": [{ "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }],
   "triggers": { "crons": ["17 3 * * *"] },
   "vars": {
-    "SITE_URL": "http://localhost:8787",
-    "EMAIL_FROM": "KUP POGODĘ <pogoda@example.com>",
-    "SUPPORT_EMAIL": "kontakt@example.com",
+    "SITE_URL": "https://kup-pogode.buygoodweather.workers.dev",
+    "EMAIL_FROM": "KUP POGODĘ <onboarding@resend.dev>",
+    "SUPPORT_EMAIL": "buygoodweather@gmail.com",
     // price in grosze; several values = A/B test, each visitor gets one at random
     "PRICE_VARIANTS": "999",
     // A = no guarantee block, B = Gwarancja Pogody, C = "100% satysfakcji"; several = A/B test
