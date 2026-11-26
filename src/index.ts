@@ -16,6 +16,13 @@ import { addDays, deviceFromUA, formatPLN, newOrderId, newToken, nowIso, pickVar
 const PRODUCT = { slug: "dobra-pogoda", name: "KUP DOBRĄ POGODĘ — certyfikat" };
 const app = new Hono<{ Bindings: Env }>();
 
+// Until a real domain is set in SITE_URL, links (Stripe return URLs, e-mails) use the address the site was opened on.
+app.use("*", async (c, next) => {
+  const host = new URL(c.req.url).host;
+  if ((!c.env.SITE_URL || c.env.SITE_URL.includes("localhost")) && !host.startsWith("localhost")) c.env = { ...c.env, SITE_URL: new URL(c.req.url).origin };
+  await next();
+});
+
 // ---------- offer (price + guarantee variant), kept per visitor in a first-party cookie ----------
 function offer(c: { env: Env; req: { raw: Request } }, cookie?: string) {
   const [p, g] = (cookie || "").split("|");
