@@ -53,9 +53,10 @@ export function buyerEmail(env: Env, o: Order) {
 ${details(o)}
 <p style="font-size:15px;line-height:1.55;margin:0 0 18px">Twój certyfikat jest gotowy. Możesz go zachować albo podarować komuś wyjątkowemu.</p>
 ${button(url, "ZOBACZ CERTYFIKAT")}
-<p style="font-size:13px;color:#5A6474;margin:22px 0 0">Kupiłeś słońce, a przyszła ulewa? <a href="${esc(env.SITE_URL)}/reklamacja?o=${o.order_id}" style="color:#1B2130">Zgłoś reklamację pogody</a>.</p>
+<p style="font-size:12px;color:#5A6474;margin:22px 0 0;line-height:1.5">Potwierdzenie: na Twoje wyraźne żądanie certyfikat (treść cyfrowa) został dostarczony przed upływem terminu do odstąpienia od umowy, a Ty przyjąłeś(-ęłaś) do wiadomości utratę prawa odstąpienia. Gwarancja Pogody obowiązuje niezależnie. <a href="${esc(env.SITE_URL)}/regulamin" style="color:#1B2130">Regulamin</a>.</p>
+<p style="font-size:13px;color:#5A6474;margin:14px 0 0">Kupiłeś słońce, a przyszła ulewa? <a href="${esc(env.SITE_URL)}/reklamacja?o=${o.order_id}" style="color:#1B2130">Zgłoś reklamację pogody</a>.</p>
 </td></tr>`);
-  const text = `Twoja dobra pogoda została zamówiona!\n\nMiejsce: ${o.location}\nData: ${formatDatePL(o.weather_date)}\nPogoda: ${conds(o)}\nTemperatura: ${o.temperature}\nNr zamówienia: ${o.order_id}\n\nCertyfikat: ${url}\n`;
+  const text = `Twoja dobra pogoda została zamówiona!\n\nMiejsce: ${o.location}\nData: ${formatDatePL(o.weather_date)}\nPogoda: ${conds(o)}\nTemperatura: ${o.temperature}\nNr zamówienia: ${o.order_id}\n\nCertyfikat: ${url}\n\nPotwierdzenie: na Twoje wyraźne żądanie certyfikat został dostarczony przed upływem terminu do odstąpienia od umowy; przyjąłeś(-ęłaś) do wiadomości utratę prawa odstąpienia. Gwarancja Pogody obowiązuje niezależnie.\n`;
   return { to: o.purchaser_email, subject: "☀️ Twoja dobra pogoda została zamówiona!", html, text };
 }
 
