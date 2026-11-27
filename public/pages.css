@@ -1,5 +1,5 @@
 :root { color-scheme: light; --sky-0:#F6F8FB; --sky-1:#E7EEF6; --sky-2:#C9D8E8; --ink:#1B2130; --ink-2:#5A6474; --sun:#F2A61F; --err:#B4442E; --ok:#2F7D5B;
-  --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif; --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif; }
+  --font-display:"Bricolage Grotesque","Manrope","Arial Narrow",system-ui,sans-serif; --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; background: var(--sky-0); color: var(--ink); font: 16px/1.55 var(--font-body); }

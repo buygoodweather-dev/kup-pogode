@@ -38,7 +38,8 @@ export function createCheckoutSession(env: Env, order: Order, productName: strin
     "checkout/sessions",
     {
       mode: "payment",
-      locale: "pl",
+      // Stripe Checkout has no Ukrainian, so Ukrainian visitors get their browser language (or English)
+      locale: order.lang === "en" ? "en" : order.lang === "uk" ? "auto" : "pl",
       // payment methods (BLIK, Przelewy24, cards, Apple Pay, Google Pay) are switched on in the Stripe dashboard
       line_items: [
         {

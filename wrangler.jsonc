@@ -18,6 +18,8 @@
       "migrations_dir": "migrations"
     }
   ],
+  // Workers AI for greeting suggestions: the free daily allowance is enough; ready-made greetings are used when it runs out
+  "ai": { "binding": "AI" },
   "rules": [{ "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }],
   "triggers": { "crons": ["17 3 * * *"] },
   "vars": {
@@ -33,7 +35,9 @@
     // Cloudflare Access (admin panel): team domain like "kuppogode.cloudflareaccess.com" and the app AUD tag
     "ACCESS_TEAM_DOMAIN": "",
     "ACCESS_AUD": "",
-    "ADMIN_EMAILS": ""
+    "ADMIN_EMAILS": "",
+    // model for greeting suggestions (any Workers AI text model)
+    "AI_MODEL": "@cf/google/gemma-3-12b-it"
   }
   // secrets (set with `wrangler secret put NAME`, never in this file):
   // STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RESEND_API_KEY

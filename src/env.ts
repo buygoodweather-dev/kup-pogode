@@ -13,6 +13,9 @@ export interface Env {
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
   RESEND_API_KEY?: string;
+  /** Workers AI (free daily allowance) for greeting suggestions; optional, ready-made greetings are used without it. */
+  AI?: Ai;
+  AI_MODEL?: string;
 }
 
 export interface Order {
@@ -51,4 +54,6 @@ export interface Order {
   source: string | null;
   campaign: string | null;
   device: string | null;
+  lang: string;
+  greeting_style: string | null;
 }

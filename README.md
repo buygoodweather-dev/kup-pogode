@@ -16,6 +16,10 @@ Jeden Cloudflare Worker obsługuje stronę (pliki z `public/`) i API. Dane w Clo
 
 Wspólny szablon certyfikatu: `public/cert.js` (podgląd w przeglądarce, strona certyfikatu i układ PDF).
 
+**Języki (PL / UA / EN).** `public/index.html` jest po polsku i ma znaczniki `data-i18n`; tłumaczenia są w `src/i18n.ts`. Worker wybiera język: `?lang=` → cookie `kp_lang` → nagłówek przeglądarki, i podmienia teksty po stronie serwera (bez kosztów za wizytę). Certyfikat, PDF, strona sukcesu i e-maile są w języku zamówienia (`orders.lang`). Regulamin i Polityka prywatności zostają po polsku (wersja wiążąca).
+
+**Życzenia w różnych stylach.** 7 „charakterów” i gotowe teksty w `public/greetings.js` (jedno kliknięcie, działa bez sieci). Przycisk „✨” woła `POST /api/greeting`, które używa Workers AI (darmowy limit dzienny, model w `AI_MODEL`) z limitem na odwiedzającego i na dzień; przy błędzie lub braku limitu zawsze wraca gotowy tekst.
+
 ## Lokalnie
 
 ```bash

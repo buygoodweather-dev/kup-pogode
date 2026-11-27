@@ -3,7 +3,11 @@ import { readFileSync } from "node:fs";
 import { verifyStripeSignature, signStripePayload, stripeForm } from "../src/stripe";
 import { CheckoutSchema, RefundSchema } from "../src/validation";
 import { decideRefund } from "../src/refunds";
-import { renderCertificate, formatDatePL, wrapText } from "../public/cert.js";
+import { renderCertificate, formatDatePL, formatDate, wrapText } from "../public/cert.js";
+import { GREETINGS, STYLE_KEYS, pickGreeting } from "../public/greetings.js";
+import { langFromHeader, pickLang, LANDING, CLIENT, t } from "../src/i18n";
+import { cleanGreeting, makeGreeting } from "../src/greeting";
+import { GreetingSchema } from "../src/validation";
 import { certificatePdf } from "../src/pdf";
 import { newOrderId, addDays, todayWarsaw } from "../src/util";
 import type { Order } from "../src/env";
@@ -93,7 +97,7 @@ describe("certificate", () => {
     const f = (n: string) => readFileSync(new URL(`../assets/fonts/${n}`, import.meta.url)).buffer as ArrayBuffer;
     const pdf = await certificatePdf(
       { recipient: "Małgorzata Żółkiewska", place: "Świnoujście", dateLabel: "15 czerwca 2027", temp: "23–26°C", conditions: ["Słońce", "Bez deszczu"], message: "Zażółć gęślą jaźń ❤️ 😀", buyer: "Łukasz", certNo: "KPG-4F7Q2K" },
-      { serif: f("CG-600.sub.ttf"), serifBold: f("CG-700.sub.ttf"), serifItalic: f("CG-500i.sub.ttf"), sans: f("MR-500.sub.ttf"), sansBold: f("MR-700.sub.ttf"), script: f("PS.sub.ttf") },
+      { serif: f("CG-600.sub.ttf"), serifBold: f("CG-700.sub.ttf"), serifItalic: f("CG-500i.sub.ttf"), sans: f("MR-500.sub.ttf"), sansBold: f("MR-700.sub.ttf"), script: f("GV.sub.ttf") },
     );
     expect(pdf.length).toBeGreaterThan(10_000);
     expect(new TextDecoder().decode(pdf.slice(0, 5))).toBe("%PDF-");
@@ -102,4 +106,97 @@ describe("certificate", () => {
 
 describe("ids", () => {
   it("makes readable order numbers", () => expect(newOrderId()).toMatch(/^KPG-[2-9A-HJ-NP-Z]{6}$/));
+});
+
+const fontFile = (n: string) => readFileSync(new URL(`../assets/fonts/${n}`, import.meta.url)).buffer as ArrayBuffer;
+const FONTS = { serif: fontFile("CG-600.sub.ttf"), serifBold: fontFile("CG-700.sub.ttf"), serifItalic: fontFile("CG-500i.sub.ttf"), sans: fontFile("MR-500.sub.ttf"), sansBold: fontFile("MR-700.sub.ttf"), script: fontFile("GV.sub.ttf") };
+
+describe("languages", () => {
+  it("picks the visitor's language", () => {
+    expect(langFromHeader("uk-UA,uk;q=0.9,en;q=0.8")).toBe("uk");
+    expect(langFromHeader("de-DE,de;q=0.9,pl;q=0.5")).toBe("pl");
+    expect(langFromHeader("de-DE,de;q=0.9")).toBe("en");
+    expect(langFromHeader("en-GB")).toBe("en");
+    expect(langFromHeader(null)).toBe("pl");
+    expect(pickLang("en", "uk", "pl")).toBe("en");
+    expect(pickLang("xx", "uk", "pl")).toBe("uk");
+    expect(pickLang(undefined, undefined, "uk")).toBe("uk");
+  });
+  it("translates every landing text key used in index.html", () => {
+    const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+    const keys = new Set<string>();
+    for (const m of html.matchAll(/data-i18n="([^"]+)"/g)) keys.add(m[1]);
+    for (const m of html.matchAll(/data-i18n-attr="([^"]+)"/g)) m[1].split(";").forEach((p) => keys.add(p.split(":")[1]));
+    for (const lang of ["uk", "en"] as const) {
+      const missing = [...keys].filter((k) => !(k in LANDING[lang]!));
+      expect(missing, lang).toEqual([]);
+    }
+  });
+  it("has the same client and server keys in every language", () => {
+    expect(Object.keys(CLIENT.uk).sort()).toEqual(Object.keys(CLIENT.pl).sort());
+    expect(Object.keys(CLIENT.en).sort()).toEqual(Object.keys(CLIENT.pl).sort());
+    expect(t("uk", "refTooLate")).toContain("14");
+    expect(t("xx", "okTitle")).toBe(t("pl", "okTitle"));
+  });
+  it("prints the certificate in the order's language", () => {
+    expect(formatDate("2027-06-15", "uk")).toBe("15 червня 2027");
+    expect(formatDate("2027-06-15", "en")).toBe("15 June 2027");
+    const svg = renderCertificate({ lang: "uk", recipient: "Оксана", place: "Львів", conditions: ["Słońce"], buyer: "Богдан" });
+    expect(svg).toContain("СПЛАЧЕНО");
+    expect(svg).toContain("Сонце");
+    expect(svg).not.toContain("Słońce");
+    expect(renderCertificate({ lang: "en", conditions: ["Bez deszczu"] })).toContain("No rain");
+  });
+  it("keeps Cyrillic names in the PDF", async () => {
+    const pdf = await certificatePdf({ lang: "uk", recipient: "Їжачок Ґудзик", place: "Київ", dateLabel: "15 червня 2027", temp: "23–26°C", conditions: ["Słońce"], message: "Щоб було сонячно ☀️", buyer: "Богдан", certNo: "KPG-4F7Q2K" }, FONTS);
+    expect(pdf.length).toBeGreaterThan(10_000);
+  });
+  it("answers refund requests in the requester's language", () => {
+    const o = { status: "paid", refund_status: "none", weather_date: "2027-06-15", payment_id: "pi_1" } as Order;
+    const r = decideRefund(o, "2027-07-15", 0, true, "en");
+    expect(r.kind === "reject" && r.message).toContain("14 days");
+  });
+});
+
+describe("greetings", () => {
+  it("has ready-made greetings for every style and language, short enough for the certificate", () => {
+    for (const lang of ["pl", "uk", "en"]) for (const k of STYLE_KEYS) {
+      const list = (GREETINGS as Record<string, Record<string, string[]>>)[lang][k];
+      expect(list.length, `${lang}/${k}`).toBeGreaterThanOrEqual(3);
+      list.forEach((g: string) => expect(g.length).toBeLessThanOrEqual(160));
+    }
+  });
+  it("cycles to the next greeting on repeated taps", () => {
+    const first = GREETINGS.pl.poet[0];
+    expect(pickGreeting("pl", "poet", first)).toBe(GREETINGS.pl.poet[1]);
+  });
+  it("cleans model output", () => {
+    expect(cleanGreeting('"Niech słońce świeci tylko dla Ciebie."')).toBe("Niech słońce świeci tylko dla Ciebie.");
+    expect(cleanGreeting("Here is a greeting:\nMay the sun follow you all day long.")).toBe("May the sun follow you all day long.");
+    expect(cleanGreeting("ok")).toBe("");
+    expect(cleanGreeting("Visit https://spam.example now for sunshine")).toBe("");
+    expect(cleanGreeting("Słońce. ".repeat(40)).length).toBeLessThanOrEqual(180);
+  });
+  it("falls back to ready-made greetings without AI or when AI fails", async () => {
+    const env = {} as never;
+    const r = await makeGreeting(env, { style: "grandma", lang: "uk", recipient: "", place: "", current: "" }, true);
+    expect(r.source).toBe("template");
+    expect(GREETINGS.uk.grandma).toContain(r.text);
+    const broken = { AI: { run: async () => { throw new Error("limit"); } } } as never;
+    expect((await makeGreeting(broken, { style: "poet", lang: "en", recipient: "", place: "", current: "" }, true)).source).toBe("template");
+    const ok = { AI: { run: async () => ({ response: "May every cloud take the day off for you, Anna." }) } } as never;
+    expect(await makeGreeting(ok, { style: "poet", lang: "en", recipient: "Anna", place: "", current: "" }, true)).toEqual({ text: "May every cloud take the day off for you, Anna.", source: "ai" });
+    expect((await makeGreeting(ok, { style: "poet", lang: "en", recipient: "", place: "", current: "" }, false)).source).toBe("template");
+  });
+  it("validates greeting requests", () => {
+    expect(GreetingSchema.safeParse({ style: "poet", lang: "uk" }).success).toBe(true);
+    expect(GreetingSchema.safeParse({ style: "hacker" }).success).toBe(false);
+    expect(GreetingSchema.parse({ style: "poet", lang: "de" }).lang).toBe("pl");
+  });
+  it("stores language and style with the order", () => {
+    const r = CheckoutSchema.parse({ ...valid, lang: "uk", style: "diplomat" });
+    expect(r.lang).toBe("uk");
+    expect(r.style).toBe("diplomat");
+    expect(CheckoutSchema.parse({ ...valid, style: "nope" }).style).toBeUndefined();
+  });
 });

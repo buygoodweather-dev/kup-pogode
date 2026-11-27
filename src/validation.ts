@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { TEMPERATURES, CONDITIONS, MESSAGE_MAX } from "../public/cert.js";
+import { STYLE_KEYS } from "../public/greetings.js";
 import { addDays, todayWarsaw } from "./util";
+import { LANGS } from "./i18n";
+
+const lang = z.enum(LANGS as [string, ...string[]]).catch("pl");
 
 /** Trim, drop control characters and collapse whitespace. */
 const clean = (s: string) => s.replace(/[\u0000-\u001F\u007F\u200B-\u200F\u2028-\u202E]/g, " ").replace(/\s+/g, " ").trim();
@@ -30,6 +34,8 @@ export const CheckoutSchema = z
     sid: z.string().max(40).optional(),
     source: z.string().max(80).optional(),
     campaign: z.string().max(80).optional(),
+    lang: lang.optional().default("pl"),
+    style: z.enum(STYLE_KEYS as [string, ...string[]]).optional().catch(undefined),
   })
   .superRefine((v, ctx) => {
     if (!v.forMe && !v.recipient) ctx.addIssue({ code: "custom", path: ["recipient"], message: "imię odbiorcy" });
@@ -46,12 +52,22 @@ export const RefundSchema = z.object({
   orderId: z.string().transform((s) => s.trim().toUpperCase().replace(/^KPG-?/, "KPG-")).pipe(z.string().regex(/^KPG-[2-9A-HJ-NP-Z]{6}$/)),
   email,
   reason: text(500).pipe(z.string().min(3)),
+  lang: lang.optional().default("pl"),
+});
+
+export const GreetingSchema = z.object({
+  style: z.enum(STYLE_KEYS as [string, ...string[]]),
+  lang: lang.optional().default("pl"),
+  recipient: text(40).optional().default(""),
+  place: text(60).optional().default(""),
+  current: z.string().max(400).optional().default(""),
+  sid: z.string().max(40).optional(),
 });
 
 export const EVENT_NAMES = [
   "page_view", "hero_cta_click", "header_cta_click", "mid_cta_click", "sticky_cta_click", "occasion_click",
   "form_started", "form_completed", "checkout_started", "certificate_viewed", "certificate_downloaded",
-  "certificate_shared", "refund_page_view",
+  "certificate_shared", "refund_page_view", "greeting_style_click", "language_switch",
 ] as const;
 export const EventSchema = z.object({
   name: z.enum(EVENT_NAMES),
